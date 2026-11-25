@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Deploy Your PHP Website on AWS EC2</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="nav"><div class="wrap"><div class="brand"><i></i>AWS PHP Guide</div>
+<button id="menu" aria-label="Toggle menu" aria-expanded="false">☰</button>
+<nav id="nav" aria-label="Main"><a href="#workflow">Workflow</a><a href="#tutorial">Tutorial</a><a href="https://github.com/hdevs0001/AWS_SERVICES_LEARNING" target="_blank" rel="noopener">GitHub</a></nav></div></header>
+
+<main>
+<section class="hero"><div class="wrap">
+<div class="badges"><span class="badge">☁️ AWS EC2</span><span class="badge">🐘 PHP</span><span class="badge">🐙 GitHub</span><span class="badge">🐧 Ubuntu</span><span class="badge">🪶 Apache2</span></div>
+<h1>Deploy Your PHP Website on AWS EC2</h1>
+<p>From your local VS Code environment to a live website on the internet. Learn how to deploy, host, and update your PHP website using GitHub, Apache2, Ubuntu, and Bash automation.</p>
+<a class="btn pri" href="#tutorial">Start Learning →</a> <a class="btn" href="#workflow">View Deployment Workflow</a>
+<div class="flow" aria-label="Deployment flow">
+<div class="node">VS Code<small>write code</small></div><div class="arr"></div><div class="node">GitHub<small>store code</small></div><div class="arr"></div><div class="node">AWS EC2<small>Ubuntu server</small></div><div class="arr"></div><div class="node">Apache2<small>web server</small></div><div class="arr"></div><div class="node">Live Website<small>on the internet</small></div></div>
+</div></section>
+
+<section class="blk" id="workflow"><div class="wrap">
+<h2>Deployment Workflow</h2><p class="sub">Two processes: the first launch, and every update after.</p>
+<div class="wf" id="wf"></div></div></section>
+
+<section class="blk" id="tutorial"><div class="wrap">
+<h2>Interactive Tutorial</h2><p class="sub">Choose a path. Tick steps as you complete them — progress is saved in your browser.</p>
+<div class="seg" id="seg" data-t="0" role="tablist"><div class="ind"></div>
+<button role="tab" id="tab0" aria-selected="true" aria-controls="panel">Initial Deployment</button>
+<button role="tab" id="tab1" aria-selected="false" aria-controls="panel">Update &amp; Redeploy</button></div>
+<p class="sub" id="tdesc" style="text-align:center"></p>
+<div class="prog" aria-live="polite"><span id="pt">0 / 0 steps</span><div class="bar"><i id="pb"></i></div></div>
+<div id="panel" role="tabpanel"></div>
+</div></section>
+</main>
+
+<footer><div class="wrap"><b>AWS PHP Deployment Guide</b>
+<p>AWS EC2 · Ubuntu · Apache2 · PHP · Git · GitHub</p>
+<p><a href="https://github.com/hdevs0001/AWS_SERVICES_LEARNING" target="_blank" rel="noopener">github.com/hdevs0001/AWS_SERVICES_LEARNING</a></p>
+<p>Built to make cloud deployment easier for developers.</p></div></footer>
+
+<button id="top" aria-label="Back to top">↑</button>
+
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="mt"><div class="mb">
+<h3 id="mt" style="margin:0 0 4px">Scan to open</h3>
+<p style="color:var(--mu);margin:0 0 14px;font-size:15px">Scan this QR code to open your live PHP website.</p>
+<div id="qr" title="Click to open website"></div>
+<div class="url" id="qurl"></div>
+<div class="acts"><button class="btn" id="qcopy">Copy URL</button><button class="btn pri" id="qopen">Open Website</button><button class="btn" id="qclose">Close</button></div>
+</div></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
