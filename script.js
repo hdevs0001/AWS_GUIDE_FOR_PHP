@@ -81,22 +81,24 @@ function bindIP(){var inp=document.getElementById("ip");if(!inp)return;
  inp.addEventListener("input",function(){ip=inp.value;store.set("ip",ip);inp.removeAttribute("aria-invalid");err.textContent=""});
  var check=function(){ip=inp.value;if(!validIP(ip)){inp.setAttribute("aria-invalid","true");err.textContent="Enter a valid IPv4 address, like 3.110.25.40.";inp.focus();return false}return true};
  document.getElementById("openbtn").onclick=function(){if(check())window.open(url(),"_blank","noopener")};
- document.getElementById("qrbtn").onclick=function(){if(check())openQR()};}
+ document.getElementById("qrbtn").onclick=function(){if(check())openQR(url())};}
 
 var modal=document.getElementById("modal"),qr=document.getElementById("qr"),lastFocus;
-function openQR(){lastFocus=document.activeElement;qr.innerHTML="";
- try{new QRCode(qr,{text:url(),width:220,height:220,correctLevel:QRCode.CorrectLevel.M})}catch(e){qr.textContent="QR library failed to load."}
- document.getElementById("qurl").textContent=url();modal.classList.add("open");document.getElementById("qopen").focus()}
+var GUIDE="https://aws-guide-for-php.vercel.app/",target="";
+function openQR(u,title,msg){target=u||url();lastFocus=document.activeElement;qr.innerHTML="";document.getElementById("mt").textContent=title||"Scan to open";document.getElementById("qmsg").textContent=msg||"Scan this QR code to open your live PHP website.";
+ try{new QRCode(qr,{text:target,width:220,height:220,correctLevel:QRCode.CorrectLevel.M})}catch(e){qr.textContent="QR library failed to load."}
+ document.getElementById("qurl").textContent=target;modal.classList.add("open");document.getElementById("qopen").focus()}
 function closeQR(){modal.classList.remove("open");if(lastFocus)lastFocus.focus()}
-qr.onclick=function(){window.open(url(),"_blank","noopener")};
+qr.onclick=function(){window.open(target,"_blank","noopener")};
 document.getElementById("qopen").onclick=qr.onclick;
 document.getElementById("qclose").onclick=closeQR;
 modal.addEventListener("click",function(e){if(e.target===modal)closeQR()});
 addEventListener("keydown",function(e){if(e.key==="Escape"&&modal.classList.contains("open"))closeQR()});
-document.getElementById("qcopy").onclick=function(){var b=this,t=url();var ok=function(){b.textContent="✓ Copied!";setTimeout(function(){b.textContent="Copy URL"},1600)};
+document.getElementById("qcopy").onclick=function(){var b=this,t=target;var ok=function(){b.textContent="✓ Copied!";setTimeout(function(){b.textContent="Copy URL"},1600)};
  navigator.clipboard&&navigator.clipboard.writeText?navigator.clipboard.writeText(t).then(ok,function(){}):ok()};
 
 [0,1].forEach(function(i){document.getElementById("tab"+i).onclick=function(){if(cur===i)return;cur=i;store.set("tab",i);render()}});
+document.querySelectorAll(".guide-qr").forEach(function(b){b.onclick=function(){openQR(GUIDE,"Open this guide","Scan this QR code to open the AWS PHP Deployment Guide.")}});
 var menu=document.getElementById("menu"),nav=document.getElementById("nav");
 menu.onclick=function(){var o=nav.classList.toggle("open");menu.setAttribute("aria-expanded",o)};
 nav.addEventListener("click",function(e){if(e.target.tagName==="A"){nav.classList.remove("open");menu.setAttribute("aria-expanded","false")}});

@@ -16,7 +16,7 @@
 <div class="badges"><span class="badge">☁️ AWS EC2</span><span class="badge">🐘 PHP</span><span class="badge">🐙 GitHub</span><span class="badge">🐧 Ubuntu</span><span class="badge">🪶 Apache2</span></div>
 <h1>Deploy Your PHP Website on AWS EC2</h1>
 <p>From your local VS Code environment to a live website on the internet. Learn how to deploy, host, and update your PHP website using GitHub, Apache2, Ubuntu, and Bash automation.</p>
-<a class="btn pri" href="#tutorial">Start Learning →</a> <a class="btn" href="#workflow">View Deployment Workflow</a>
+<a class="btn pri" href="#tutorial">Start Learning →</a> <a class="btn" href="#workflow">View Deployment Workflow</a> <button class="btn guide-qr" type="button">Guide QR Code</button>
 <div class="flow" aria-label="Deployment flow">
 <div class="node">VS Code<small>write code</small></div><div class="arr"></div><div class="node">GitHub<small>store code</small></div><div class="arr"></div><div class="node">AWS EC2<small>Ubuntu server</small></div><div class="arr"></div><div class="node">Apache2<small>web server</small></div><div class="arr"></div><div class="node">Live Website<small>on the internet</small></div></div>
 </div></section>
@@ -39,13 +39,14 @@
 <footer><div class="wrap"><b>AWS PHP Deployment Guide</b>
 <p>AWS EC2 · Ubuntu · Apache2 · PHP · Git · GitHub</p>
 <p><a href="https://github.com/hdevs0001/AWS_SERVICES_LEARNING" target="_blank" rel="noopener">github.com/hdevs0001/AWS_SERVICES_LEARNING</a></p>
+<p><button class="btn guide-qr" type="button">Share this guide (QR)</button></p>
 <p>Built to make cloud deployment easier for developers.</p></div></footer>
 
 <button id="top" aria-label="Back to top">↑</button>
 
 <div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="mt"><div class="mb">
 <h3 id="mt" style="margin:0 0 4px">Scan to open</h3>
-<p style="color:var(--mu);margin:0 0 14px;font-size:15px">Scan this QR code to open your live PHP website.</p>
+<p id="qmsg" style="color:var(--mu);margin:0 0 14px;font-size:15px">Scan this QR code to open your live PHP website.</p>
 <div id="qr" title="Click to open website"></div>
 <div class="url" id="qurl"></div>
 <div class="acts"><button class="btn" id="qcopy">Copy URL</button><button class="btn pri" id="qopen">Open Website</button><button class="btn" id="qclose">Close</button></div>
