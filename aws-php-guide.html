@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Deploy Your PHP Website on AWS EC2</title>
+<style>
+:root{--bg:#07080b;--card:rgba(255,255,255,.04);--bd:rgba(255,255,255,.1);--tx:#e8eaf0;--mu:#8b92a5;--ac:#ff9900;--ac2:#7c5cff;--ok:#3ddc97;--code:#0c0e14;--wr:#ffb454;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:dark}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#07080b}}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]){--bg:#f6f7fb;--card:rgba(0,0,0,.04);--bd:rgba(0,0,0,.12);--tx:#14161d;--mu:#5b6275;--code:#10131b;--ac:#c26a00;color-scheme:light}}
+:root[data-theme="dark"]{--bg:#07080b}
+html{scroll-padding-top:90px}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.65 system-ui,-apple-system,"Segoe UI",Inter,sans-serif;overflow-x:hidden;
+background-image:linear-gradient(var(--bd) 1px,transparent 1px),linear-gradient(90deg,var(--bd) 1px,transparent 1px);background-size:56px 56px;background-attachment:fixed}
+body::before{content:"";position:fixed;inset:0;background:radial-gradient(600px 400px at 15% 0,rgba(255,153,0,.18),transparent),radial-gradient(700px 500px at 90% 10%,rgba(124,92,255,.18),transparent),var(--bg);opacity:.93;z-index:-1}
+a{color:inherit}
+header.nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;backdrop-filter:blur(14px);background:color-mix(in srgb,var(--bg) 75%,transparent);border-bottom:1px solid var(--bd)}
+body::after{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area-inset-top,0px);background:var(--bg);z-index:30}
+.wrap{max-width:1000px;margin:0 auto;padding:0 20px}
+.nav .wrap{display:flex;align-items:center;justify-content:space-between;height:60px}
+.brand{font-weight:700;display:flex;gap:8px;align-items:center}.brand i{width:22px;height:22px;border-radius:7px;background:linear-gradient(135deg,var(--ac),var(--ac2))}
+nav a{margin-left:18px;color:var(--mu);text-decoration:none;font-size:14px}nav a:hover{color:var(--tx)}
+#menu{display:none;background:none;border:1px solid var(--bd);color:var(--tx);border-radius:10px;padding:6px 10px;font-size:18px}
+@media(max-width:700px){#menu{display:block}nav{display:none;position:absolute;top:60px;left:0;right:0;background:var(--bg);padding:10px 20px;border-bottom:1px solid var(--bd)}nav.open{display:block}nav a{display:block;margin:0;padding:12px 0}}
+.hero{padding:80px 0 40px;text-align:center}
+.badges{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:22px}
+.badge{border:1px solid var(--bd);background:var(--card);border-radius:99px;padding:4px 12px;font-size:13px;color:var(--mu)}
+h1{font-size:clamp(34px,6vw,64px);line-height:1.08;margin:0 0 18px;letter-spacing:-.03em;background:linear-gradient(120deg,var(--tx),var(--ac) 70%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{max-width:640px;margin:0 auto 28px;color:var(--mu);font-size:18px}
+.btn{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--bd);background:var(--card);color:var(--tx);padding:11px 20px;border-radius:12px;font:inherit;font-weight:600;cursor:pointer;text-decoration:none;transition:transform .15s,box-shadow .2s}
+.btn:hover{transform:translateY(-2px)}.btn:active{transform:scale(.97)}
+.btn.pri{background:linear-gradient(135deg,var(--ac),#ff6a00);color:#111;border:0;box-shadow:0 8px 30px rgba(255,153,0,.3)}
+.btn:focus-visible,summary:focus-visible,input:focus-visible{outline:2px solid var(--ac2);outline-offset:2px}
+.flow{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:6px;margin:44px 0 0}
+.node{border:1px solid var(--bd);background:var(--card);border-radius:14px;padding:12px 14px;font-size:14px;font-weight:600;min-width:104px;animation:pulse 4s infinite}
+.node small{display:block;color:var(--mu);font-weight:400;font-size:11px}
+.arr{width:34px;height:2px;background:linear-gradient(90deg,transparent,var(--ac),transparent);background-size:200% 100%;animation:run 1.4s linear infinite}
+@keyframes run{to{background-position:-200% 0}}@keyframes pulse{50%{box-shadow:0 0 24px rgba(255,153,0,.25)}}
+@media(max-width:700px){.flow{flex-direction:column}.arr{width:2px;height:24px}}
+section.blk{padding:50px 0}
+h2{font-size:clamp(26px,4vw,38px);margin:0 0 8px;letter-spacing:-.02em}
+.sub{color:var(--mu);margin:0 0 24px}
+.wf{display:grid;gap:18px}
+.wf .row{display:flex;flex-wrap:wrap;align-items:center;gap:6px;border:1px solid var(--bd);background:var(--card);border-radius:18px;padding:18px}
+.wf h3{width:100%;margin:0 0 6px;font-size:14px;color:var(--ac);text-transform:uppercase;letter-spacing:.08em}
+.chip{background:var(--code);color:#e8eaf0;border:1px solid var(--bd);border-radius:10px;padding:7px 12px;font-size:13px}
+.seg{position:relative;display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--bd);background:var(--card);border-radius:16px;padding:5px;margin-bottom:12px}
+.seg button{position:relative;z-index:1;background:none;border:0;color:var(--mu);padding:12px 10px;font:inherit;font-weight:700;cursor:pointer;border-radius:12px;text-align:center}
+.seg button[aria-selected="true"]{color:#111}
+.seg .ind{position:absolute;top:5px;bottom:5px;left:5px;width:calc(50% - 5px);border-radius:12px;background:linear-gradient(135deg,var(--ac),#ff6a00);transition:transform .35s cubic-bezier(.2,.9,.3,1)}
+.seg[data-t="1"] .ind{transform:translateX(100%)}
+.prog{position:sticky;top:calc(60px + env(safe-area-inset-top,0px));z-index:10;background:color-mix(in srgb,var(--bg) 85%,transparent);backdrop-filter:blur(10px);padding:10px 0;display:flex;align-items:center;gap:12px;font-size:14px;color:var(--mu)}
+.bar{flex:1;height:8px;border-radius:9px;background:var(--card);border:1px solid var(--bd);overflow:hidden}.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--ok),var(--ac));transition:width .4s}
+.panel{animation:in .45s both}@keyframes in{from{opacity:0;transform:translateY(14px)}}
+.tl{position:relative;margin-top:14px;padding-left:0}
+.step{position:relative;margin:0 0 22px 52px;border:1px solid var(--bd);background:var(--card);border-radius:20px;padding:22px;opacity:0;transform:translateY(18px);transition:opacity .5s,transform .5s,border-color .3s,box-shadow .3s}
+.step.show{opacity:1;transform:none}.step.active{border-color:var(--ac);box-shadow:0 0 0 1px var(--ac),0 10px 40px rgba(255,153,0,.1)}
+.step::before{content:"";position:absolute;left:-30px;top:44px;bottom:-24px;width:2px;background:var(--bd)}.step:last-child::before{display:none}
+.num{position:absolute;left:-52px;top:18px;width:44px;height:44px;border-radius:14px;display:grid;place-items:center;font-weight:800;background:var(--code);color:var(--ac);border:1px solid var(--bd)}
+.step.done .num{background:var(--ok);color:#06241a}
+.step h3{margin:0 0 8px;font-size:21px;padding-right:90px}.step p{margin:0 0 12px;color:var(--mu)}.step p b{color:var(--tx)}
+.chk{position:absolute;right:18px;top:20px;display:flex;gap:6px;align-items:center;font-size:13px;color:var(--mu);cursor:pointer}.chk input{width:18px;height:18px;accent-color:var(--ok)}
+.code{position:relative;margin:10px 0;border-radius:14px;background:var(--code);border:1px solid var(--bd);color:#d7dbe6}
+.code pre{margin:0;padding:16px 70px 16px 16px;overflow-x:auto;font:13px/1.6 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;tab-size:2}
+.code .cm{color:#6c768c}.code .kw{color:#ff9d5c}.code .st{color:#7ee0a8}
+.cp{position:absolute;right:8px;top:8px;background:rgba(255,255,255,.08);color:#e8eaf0;border:1px solid rgba(255,255,255,.14);border-radius:9px;padding:5px 10px;font-size:12px;cursor:pointer}
+.cp.ok{background:var(--ok);color:#06241a}
+.out{border-left:3px solid var(--ok);background:rgba(61,220,151,.07);border-radius:0 12px 12px 0;padding:10px 14px;margin:10px 0;font:13px/1.6 ui-monospace,Menlo,Consolas,monospace;white-space:pre-wrap}
+.out b{display:block;color:var(--ok);font:600 12px system-ui;margin-bottom:4px;text-transform:uppercase;letter-spacing:.06em}
+.warn{border-left:3px solid var(--wr);background:rgba(255,180,84,.09);border-radius:0 12px 12px 0;padding:10px 14px;margin:10px 0;font-size:15px}
+details{border:1px solid var(--bd);border-radius:12px;margin:10px 0;padding:0 14px}summary{cursor:pointer;padding:11px 0;font-weight:600;font-size:15px}
+details dl{margin:0 0 12px}details dt{font-family:ui-monospace,Menlo,monospace;font-size:13px;color:var(--ac);margin-top:8px}details dd{margin:0;color:var(--mu);font-size:15px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin:12px 0}
+.rq{border:1px solid var(--bd);background:var(--code);color:#e8eaf0;border-radius:14px;padding:14px;transition:transform .2s,border-color .2s}.rq:hover{transform:translateY(-4px);border-color:var(--ac)}
+.rq span{font-size:26px}.rq b{display:block}.rq small{color:#9aa1b5}
+table{width:100%;border-collapse:collapse;margin:10px 0;font-size:15px}th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--bd)}th{color:var(--mu);font-weight:600}
+ul.ck{list-style:none;padding:0;margin:10px 0}ul.ck li{padding:8px 0;border-bottom:1px dashed var(--bd)}ul.ck li::before{content:"✓";color:var(--ok);margin-right:10px;font-weight:800}
+.ipbox{display:flex;flex-wrap:wrap;gap:10px;margin:12px 0}
+.ipbox input{flex:1;min-width:200px;background:var(--code);color:#e8eaf0;border:1px solid var(--bd);border-radius:12px;padding:12px 14px;font:15px ui-monospace,Menlo,monospace}
+.ipbox input[aria-invalid="true"]{border-color:#ff6b6b}
+.err{color:#ff7b7b;font-size:14px;min-height:20px}
+.modal{position:fixed;inset:0;z-index:50;display:none;place-items:center;background:rgba(0,0,0,.65);backdrop-filter:blur(6px);padding:16px}
+.modal.open{display:grid}
+.mb{width:min(420px,100%);background:var(--bg);border:1px solid var(--bd);border-radius:24px;padding:26px;text-align:center;animation:pop .3s both;max-height:100%;overflow:auto}
+@keyframes pop{from{opacity:0;transform:scale(.92) translateY(10px)}}
+#qr{display:inline-block;background:#fff;padding:14px;border-radius:16px;cursor:pointer;transition:transform .2s;line-height:0}#qr:hover{transform:scale(1.03)}
+#qr canvas,#qr img{max-width:100%;height:auto}
+.url{word-break:break-all;font-family:ui-monospace,Menlo,monospace;font-size:14px;color:var(--ac);margin:10px 0 16px}
+.mb .acts{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+footer{border-top:1px solid var(--bd);margin-top:60px;padding:40px 0 60px;text-align:center;color:var(--mu)}
+footer b{color:var(--tx);font-size:18px}
+#top{position:fixed;right:18px;bottom:calc(18px + env(safe-area-inset-bottom,0px));width:46px;height:46px;border-radius:14px;border:1px solid var(--bd);background:var(--card);backdrop-filter:blur(10px);color:var(--tx);font-size:20px;cursor:pointer;opacity:0;pointer-events:none;transition:opacity .3s;z-index:15}
+#top.on{opacity:1;pointer-events:auto}
+@media(max-width:600px){.step{margin-left:40px;padding:18px}.num{left:-42px;width:36px;height:36px}.step::before{left:-24px}.step h3{padding-right:0;margin-top:22px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}html{scroll-behavior:auto!important}.step{opacity:1;transform:none}}
+html{scroll-behavior:smooth}
+</style>
+</head>
+<body>
+<header class="nav"><div class="wrap"><div class="brand"><i></i>AWS PHP Guide</div>
+<button id="menu" aria-label="Toggle menu" aria-expanded="false">☰</button>
+<nav id="nav" aria-label="Main"><a href="#workflow">Workflow</a><a href="#tutorial">Tutorial</a><a href="https://github.com/hdevs0001/AWS_SERVICES_LEARNING" target="_blank" rel="noopener">GitHub</a></nav></div></header>
+
+<main>
+<section class="hero"><div class="wrap">
+<div class="badges"><span class="badge">☁️ AWS EC2</span><span class="badge">🐘 PHP</span><span class="badge">🐙 GitHub</span><span class="badge">🐧 Ubuntu</span><span class="badge">🪶 Apache2</span></div>
+<h1>Deploy Your PHP Website on AWS EC2</h1>
+<p>From your local VS Code environment to a live website on the internet. Learn how to deploy, host, and update your PHP website using GitHub, Apache2, Ubuntu, and Bash automation.</p>
+<a class="btn pri" href="#tutorial">Start Learning →</a> <a class="btn" href="#workflow">View Deployment Workflow</a>
+<div class="flow" aria-label="Deployment flow">
+<div class="node">VS Code<small>write code</small></div><div class="arr"></div><div class="node">GitHub<small>store code</small></div><div class="arr"></div><div class="node">AWS EC2<small>Ubuntu server</small></div><div class="arr"></div><div class="node">Apache2<small>web server</small></div><div class="arr"></div><div class="node">Live Website<small>on the internet</small></div></div>
+</div></section>
+
+<section class="blk" id="workflow"><div class="wrap">
+<h2>Deployment Workflow</h2><p class="sub">Two processes: the first launch, and every update after.</p>
+<div class="wf" id="wf"></div></div></section>
+
+<section class="blk" id="tutorial"><div class="wrap">
+<h2>Interactive Tutorial</h2><p class="sub">Choose a path. Tick steps as you complete them — progress is saved in your browser.</p>
+<div class="seg" id="seg" data-t="0" role="tablist"><div class="ind"></div>
+<button role="tab" id="tab0" aria-selected="true" aria-controls="panel">Initial Deployment</button>
+<button role="tab" id="tab1" aria-selected="false" aria-controls="panel">Update &amp; Redeploy</button></div>
+<p class="sub" id="tdesc" style="text-align:center"></p>
+<div class="prog" aria-live="polite"><span id="pt">0 / 0 steps</span><div class="bar"><i id="pb"></i></div></div>
+<div id="panel" role="tabpanel"></div>
+</div></section>
+</main>
+
+<footer><div class="wrap"><b>AWS PHP Deployment Guide</b>
+<p>AWS EC2 · Ubuntu · Apache2 · PHP · Git · GitHub</p>
+<p><a href="https://github.com/hdevs0001/AWS_SERVICES_LEARNING" target="_blank" rel="noopener">github.com/hdevs0001/AWS_SERVICES_LEARNING</a></p>
+<p>Built to make cloud deployment easier for developers.</p></div></footer>
+
+<button id="top" aria-label="Back to top">↑</button>
+
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="mt"><div class="mb">
+<h3 id="mt" style="margin:0 0 4px">Scan to open</h3>
+<p style="color:var(--mu);margin:0 0 14px;font-size:15px">Scan this QR code to open your live PHP website.</p>
+<div id="qr" title="Click to open website"></div>
+<div class="url" id="qurl"></div>
+<div class="acts"><button class="btn" id="qcopy">Copy URL</button><button class="btn pri" id="qopen">Open Website</button><button class="btn" id="qclose">Close</button></div>
+</div></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+(function(){
+var esc=function(s){return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")};
+var hl=function(s){return esc(s).split("\n").map(function(l){
+ if(/^\s*#(?!!)/.test(l))return '<span class="cm">'+l+'</span>';
+ return l.replace(/^(\s*)(sudo|apt|systemctl|rm|git|chown|chmod|sed|echo|cd|set|ssh|nano)\b/,'$1<span class="kw">$2</span>').replace(/(https?:\/\/[^\s]+|"[^"]*")/g,'<span class="st">$1</span>')}).join("\n")};
+var store={get:function(k){try{return localStorage.getItem(k)}catch(e){return null}},set:function(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
+
+var USERDATA='#!/bin/bash\n\n# Stop if any command fails\nset -e\n\n# Update Ubuntu packages\napt update -y\napt upgrade -y\n\n# Install required packages\napt install -y apache2 git php libapache2-mod-php\n\n# Start Apache and enable it on boot\nsystemctl enable apache2\nsystemctl start apache2\n\n# Remove the default Apache website files\nrm -rf /var/www/html/*\n\n# Clone your GitHub repository into Apache\'s root directory\ngit clone https://github.com/hdevs0001/AWS_SERVICES_LEARNING.git /var/www/html\n\n# Set proper permissions\nchown -R www-data:www-data /var/www/html\nchmod -R 755 /var/www/html\n\n# Make PHP the default index file\nsed -i \'s/DirectoryIndex.*/DirectoryIndex index.php index.html/\' /etc/apache2/mods-enabled/dir.conf\n\n# Restart Apache\nsystemctl restart apache2\n\n# Log completion\necho "Website deployment completed successfully!"';
+var DEPLOY='#!/bin/bash\n\nset -e\n\necho "Starting deployment..."\n\ncd /var/www/html\n\n# Download latest GitHub changes\ngit -c safe.directory=/var/www/html fetch origin main\n\n# Make EC2 exactly match GitHub main\ngit -c safe.directory=/var/www/html reset --hard origin/main\n\necho "Deployment completed successfully!"';
+
+var TABS=[
+{name:"Initial Deployment",desc:"Deploy your PHP website from GitHub to an AWS EC2 Ubuntu server.",steps:[
+{t:"Prepare Your Development Environment",p:"Before you start, make sure you have these five things ready.",x:"reqs"},
+{t:"Create Your PHP Project and Push to GitHub",p:"Create a PHP project in VS Code and make sure <b>index.php</b> exists in the root directory. Then initialize Git, create a GitHub repository, and push. Run these in the VS Code terminal:",code:["git init\ngit add .\ngit commit -m \"Initial commit\"\ngit branch -M main\ngit remote add origin https://github.com/YOUR_USERNAME/YOUR_REPOSITORY.git\ngit push -u origin main"],warn:"The repository should be <b>public</b> for the simple unauthenticated clone method used in this tutorial."},
+{t:"Launch an AWS EC2 Instance",p:"In the AWS Management Console: search for <b>EC2</b>, open the EC2 Dashboard, then click <b>Launch Instance</b>. Name it <b>PHP-Website-Server</b> and choose <b>Ubuntu Server 24.04 LTS</b>. Pick an instance type eligible for your account’s free-tier offer, if available. Create or select a key pair, then configure the Security Group with these inbound rules:",x:"sg",after:"Port 80 is necessary for public website access. Keep SSH limited to your own IP."},
+{t:"Configure Advanced Details and Add User Data",p:"Go to <b>EC2 → Launch Instance → Advanced Details → User Data</b> and paste this complete Bash script. It runs automatically on first boot. Replace the repository URL with your own if needed.",code:[USERDATA],ex:[["apt install apache2","Installs Apache."],["apt install php","Installs PHP."],["apt install git","Installs Git."],["rm -rf /var/www/html/*","Removes default Apache files."],["git clone","Downloads the GitHub project."],["chown","Sets ownership for Apache."],["chmod","Sets file permissions."],["systemctl restart apache2","Restarts the web server."]],warn:"This script <b>deletes existing contents of /var/www/html</b>. Use it only on a fresh deployment directory. The repository must be public so it can be cloned without credentials."},
+{t:"Launch the Instance and Wait",p:"Click <b>Launch Instance</b>, then open <b>EC2 → Instances</b> and work through this checklist:",x:"wait"},
+{t:"Open Your Live PHP Website",p:"Your site is ready. Enter your EC2 public IP below to build the URL, open the site, or generate a QR code.",x:"ip"}]},
+{name:"Update & Redeploy",desc:"Push your latest code to GitHub and deploy it to your EC2 server.",steps:[
+{t:"Connect to Your EC2 Machine Using SSH",p:"Connect to your Ubuntu instance with your private key. Replace <b>your-key.pem</b> with your key filename and <b>YOUR_EC2_PUBLIC_IP</b> with the instance’s public IP. The security group must allow SSH from your IP.",code:["ssh -i \"your-key.pem\" ubuntu@YOUR_EC2_PUBLIC_IP"],flow:"VS Code → GitHub Push → EC2 Deployment Script → Live Website Updated"},
+{t:"Navigate to Apache’s Website Directory",p:"Apache serves the website from <b>/var/www/html</b>.",code:["cd /var/www/html"]},
+{t:"Create a Deployment Script",p:"We’ll create a reusable Bash script so you don’t type several Git commands every time.",code:["sudo nano /usr/local/bin/deploy-website"]},
+{t:"Add the Deployment Script",p:"Paste this into nano. It downloads the latest GitHub changes and makes the server match the <b>main</b> branch. Save with Ctrl+O, Enter, then exit with Ctrl+X.",code:[DEPLOY],ex:[["set -e","Stops execution when a command fails."],["cd /var/www/html","Opens the website directory."],["git fetch","Downloads the latest GitHub changes."],["git reset --hard origin/main","Updates the server to exactly match GitHub’s main branch."],["echo","Prints deployment status."],["safe.directory","Apache owns the website files, while the command runs with elevated privileges. This avoids Git’s dubious ownership warning."]],warn:"<b>git reset --hard origin/main</b> permanently discards local modifications to tracked files on EC2. GitHub must be the source of truth. Don’t use this approach if server-side code changes need to be preserved."},
+{t:"Make the Script Executable",p:"Linux needs executable permission before the script can run.",code:["sudo chmod +x /usr/local/bin/deploy-website"]},
+{t:"Deploy Your Latest Changes",p:"After you edit a PHP file locally and push it to GitHub, just connect to EC2 and run:",code:["sudo deploy-website"],out:"Starting deployment...\nFrom https://github.com/hdevs0001/AWS_SERVICES_LEARNING\nHEAD is now at cb5b265 ...\nDeployment completed successfully!",note:"The commit hash will vary with each deployment."},
+{t:"Verify the Deployment",p:"Check the latest deployed commit, then open the EC2 public IP in your browser to see the updated PHP website.",code:["sudo git -C /var/www/html log -1 --oneline"]}]}];
+
+var WF=[["Initial deployment",["VS Code","GitHub","AWS EC2 User Data","Apache2 + PHP","Live Website"]],["Code updates",["Edit PHP","Git Commit","Git Push","SSH into EC2","Run deploy-website","Updated Website"]]];
+document.getElementById("wf").innerHTML=WF.map(function(w){return '<div class="row"><h3>'+w[0]+'</h3>'+w[1].map(function(c){return '<span class="chip">'+c+'</span>'}).join('<span class="arr"></span>')+'</div>'}).join("");
+
+var cur=+store.get("tab")||0,done={};try{done=JSON.parse(store.get("done")||"{}")}catch(e){}
+var ip=store.get("ip")||"";
+var panel=document.getElementById("panel"),seg=document.getElementById("seg");
+
+function codeBlock(c){return '<div class="code"><pre><code>'+hl(c)+'</code></pre><button class="cp" data-c="1">Copy</button></div>'}
+function extra(s){
+ if(s.x==="reqs")return '<div class="grid">'+[["💻","VS Code","Write and manage PHP code."],["🔀","Git","Track and push code changes."],["🐙","GitHub account","Host your source code."],["☁️","AWS account","Launch an EC2 virtual machine."],["🐘","PHP project","Contains an index.php file."]].map(function(r){return '<div class="rq"><span>'+r[0]+'</span><b>'+r[1]+'</b><small>'+r[2]+'</small></div>'}).join("")+'</div>';
+ if(s.x==="sg")return '<table><thead><tr><th>Type</th><th>Port</th><th>Source</th></tr></thead><tbody><tr><td>SSH</td><td>22</td><td>My IP</td></tr><tr><td>HTTP</td><td>80</td><td>Anywhere IPv4</td></tr></tbody></table>';
+ if(s.x==="wait")return '<ul class="ck"><li>Instance State shows <b>Running</b></li><li>Status Checks show <b>2/2 checks passed</b></li><li>Copy the <b>Public IPv4 address</b></li></ul>';
+ if(s.x==="ip")return '<div class="ipbox"><input id="ip" inputmode="decimal" autocomplete="off" placeholder="e.g. 3.110.25.40" aria-label="EC2 public IP" value="'+esc(ip)+'"></div><div class="err" id="err" role="alert"></div><p>URL template: <b>http://YOUR_EC2_PUBLIC_IP</b></p><div class="acts" style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn pri" id="openbtn">Open Live Website</button><button class="btn" id="qrbtn">Show QR Code</button></div>';
+ return "";}
+function render(){
+ var T=TABS[cur];seg.dataset.t=cur;
+ [0,1].forEach(function(i){document.getElementById("tab"+i).setAttribute("aria-selected",i===cur)});
+ document.getElementById("tdesc").textContent=T.desc;
+ var h='<div class="panel"><div class="tl">';
+ T.steps.forEach(function(s,i){var id=cur+"-"+i;
+  h+='<article class="step'+(done[id]?" done":"")+'" id="s'+id+'" data-id="'+id+'"><div class="num">'+(i+1)+'</div><label class="chk"><input type="checkbox" '+(done[id]?"checked":"")+'> Done</label><h3>'+s.t+'</h3><p>'+s.p+'</p>'+(s.flow?'<p><span class="chip">'+s.flow+'</span></p>':'')+extra(s)+(s.after?'<p>'+s.after+'</p>':'')+(s.code||[]).map(codeBlock).join("")+(s.out?'<div class="out"><b>Expected output</b>'+esc(s.out)+'</div>':'')+(s.note?'<p>'+s.note+'</p>':'')+(s.ex?'<details><summary>What does each command do?</summary><dl>'+s.ex.map(function(e){return '<dt>'+esc(e[0])+'</dt><dd>'+esc(e[1])+'</dd>'}).join("")+'</dl></details>':'')+(s.warn?'<div class="warn">⚠️ '+s.warn+'</div>':'')+'</article>';});
+ panel.innerHTML=h+'</div></div>';
+ // map copy text
+ var blocks=[];T.steps.forEach(function(s){(s.code||[]).forEach(function(c){blocks.push(c)})});
+ panel.querySelectorAll(".cp").forEach(function(b,i){b.dataset.i=i});
+ panel.__blocks=blocks;
+ progress();observe();bindIP();
+}
+function progress(){var n=TABS[cur].steps.length,d=0;TABS[cur].steps.forEach(function(s,i){if(done[cur+"-"+i])d++});
+ document.getElementById("pt").textContent=d+" / "+n+" steps";document.getElementById("pb").style.width=(d/n*100)+"%"}
+var io;function observe(){
+ var reduce=matchMedia("(prefers-reduced-motion:reduce)").matches;
+ if(io)io.disconnect();
+ io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add("show")}})},{threshold:.08});
+ panel.querySelectorAll(".step").forEach(function(s){reduce?s.classList.add("show"):io.observe(s)});}
+function setActive(){var best=null,bd=1e9,y=innerHeight*.35;
+ panel.querySelectorAll(".step").forEach(function(s){var r=s.getBoundingClientRect();var d=r.top<=y&&r.bottom>=y?0:Math.min(Math.abs(r.top-y),Math.abs(r.bottom-y));if(d<bd){bd=d;best=s}});
+ panel.querySelectorAll(".step").forEach(function(s){s.classList.toggle("active",s===best)})}
+
+panel.addEventListener("click",function(e){
+ var b=e.target.closest(".cp");
+ if(b){var txt=panel.__blocks[+b.dataset.i];
+  var ok=function(){b.textContent="✓ Copied!";b.classList.add("ok");setTimeout(function(){b.textContent="Copy";b.classList.remove("ok")},1600)};
+  var fb=function(){var t=document.createElement("textarea");t.value=txt;t.style.position="fixed";t.style.opacity="0";document.body.appendChild(t);t.select();try{document.execCommand("copy");ok()}catch(x){b.textContent="Press Ctrl+C"}document.body.removeChild(t)};
+  (navigator.clipboard&&navigator.clipboard.writeText)?navigator.clipboard.writeText(txt).then(ok,fb):fb();}
+});
+panel.addEventListener("change",function(e){if(e.target.type!=="checkbox")return;var st=e.target.closest(".step"),id=st.dataset.id;
+ if(e.target.checked)done[id]=1;else delete done[id];st.classList.toggle("done",!!done[id]);store.set("done",JSON.stringify(done));progress()});
+
+function validIP(v){var m=/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/.exec(v.trim());return !!m&&m.slice(1).every(function(o){return +o<=255&&String(+o)===o||o==="0"})}
+function url(){return "http://"+ip.trim()}
+function bindIP(){var inp=document.getElementById("ip");if(!inp)return;
+ var err=document.getElementById("err");
+ inp.addEventListener("input",function(){ip=inp.value;store.set("ip",ip);inp.removeAttribute("aria-invalid");err.textContent=""});
+ var check=function(){ip=inp.value;if(!validIP(ip)){inp.setAttribute("aria-invalid","true");err.textContent="Enter a valid IPv4 address, like 3.110.25.40.";inp.focus();return false}return true};
+ document.getElementById("openbtn").onclick=function(){if(check())window.open(url(),"_blank","noopener")};
+ document.getElementById("qrbtn").onclick=function(){if(check())openQR()};}
+
+var modal=document.getElementById("modal"),qr=document.getElementById("qr"),lastFocus;
+function openQR(){lastFocus=document.activeElement;qr.innerHTML="";
+ try{new QRCode(qr,{text:url(),width:220,height:220,correctLevel:QRCode.CorrectLevel.M})}catch(e){qr.textContent="QR library failed to load."}
+ document.getElementById("qurl").textContent=url();modal.classList.add("open");document.getElementById("qopen").focus()}
+function closeQR(){modal.classList.remove("open");if(lastFocus)lastFocus.focus()}
+qr.onclick=function(){window.open(url(),"_blank","noopener")};
+document.getElementById("qopen").onclick=qr.onclick;
+document.getElementById("qclose").onclick=closeQR;
+modal.addEventListener("click",function(e){if(e.target===modal)closeQR()});
+addEventListener("keydown",function(e){if(e.key==="Escape"&&modal.classList.contains("open"))closeQR()});
+document.getElementById("qcopy").onclick=function(){var b=this,t=url();var ok=function(){b.textContent="✓ Copied!";setTimeout(function(){b.textContent="Copy URL"},1600)};
+ navigator.clipboard&&navigator.clipboard.writeText?navigator.clipboard.writeText(t).then(ok,function(){}):ok()};
+
+[0,1].forEach(function(i){document.getElementById("tab"+i).onclick=function(){if(cur===i)return;cur=i;store.set("tab",i);render()}});
+var menu=document.getElementById("menu"),nav=document.getElementById("nav");
+menu.onclick=function(){var o=nav.classList.toggle("open");menu.setAttribute("aria-expanded",o)};
+nav.addEventListener("click",function(e){if(e.target.tagName==="A"){nav.classList.remove("open");menu.setAttribute("aria-expanded","false")}});
+var top=document.getElementById("top");top.onclick=function(){scrollTo({top:0,behavior:matchMedia("(prefers-reduced-motion:reduce)").matches?"auto":"smooth"})};
+var tick=false;addEventListener("scroll",function(){if(tick)return;tick=true;requestAnimationFrame(function(){tick=false;top.classList.toggle("on",scrollY>600);setActive()})},{passive:true});
+render();setActive();
+})();
+</script>
+</body>
+</html>
