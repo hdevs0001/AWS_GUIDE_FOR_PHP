@@ -89,3 +89,50 @@ footer b{color:var(--tx);font-size:18px}
 @media(max-width:600px){.step{margin-left:40px;padding:18px}.num{left:-42px;width:36px;height:36px}.step::before{left:-24px}.step h3{padding-right:0;margin-top:22px}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}html{scroll-behavior:auto!important}.step{opacity:1;transform:none}}
 html{scroll-behavior:smooth}
+
+/* ===== Extra mobile responsiveness ===== */
+html{-webkit-text-size-adjust:100%}
+img,canvas,svg{max-width:100%}
+.ipbox input{font-size:16px}
+@media(max-width:900px){
+ .wrap{padding:0 16px}
+ section.blk{padding:36px 0}
+}
+@media(max-width:700px){
+ body{background-attachment:scroll;background-size:40px 40px}
+ .hero{padding:44px 0 24px}
+ .hero p{font-size:16px;margin-bottom:22px}
+ .hero .btn{width:100%;justify-content:center;margin:0 0 10px}
+ .flow{margin-top:30px;gap:2px}
+ .node{width:100%;max-width:260px}
+ .wf .row{padding:14px;gap:4px}
+ .wf .arr{width:16px}
+ .chip{font-size:12px;padding:6px 9px}
+ .seg button{font-size:14px;padding:12px 6px}
+ .prog{font-size:13px;gap:8px}
+ .step{padding:16px 14px;border-radius:16px}
+ .step h3{font-size:18px}
+ .chk{position:static;margin-bottom:6px;font-size:14px}
+ .chk input{width:22px;height:22px}
+ .step h3{margin-top:0}
+ .code pre{font-size:12px;padding:44px 12px 12px}
+ .cp{top:6px;right:6px;padding:7px 12px;font-size:13px}
+ table{display:block;overflow-x:auto;white-space:nowrap}
+ .grid{grid-template-columns:1fr 1fr}
+ .ipbox input,.ipbox .btn{width:100%;min-width:0}
+ .step .acts{flex-direction:column}
+ .step .acts .btn{width:100%;justify-content:center}
+ .mb{padding:20px 16px;border-radius:20px}
+ .mb .acts .btn{flex:1 1 100%;justify-content:center}
+ #qr{padding:10px}
+ footer{padding:30px 0 70px}
+}
+@media(max-width:400px){
+ h1{font-size:30px}
+ .grid{grid-template-columns:1fr}
+ .step{margin-left:34px}
+ .num{left:-36px;width:30px;height:30px;font-size:14px;border-radius:10px}
+ .step::before{left:-21px}
+ .brand{font-size:15px}
+}
+@media(hover:none){.btn:hover,.rq:hover,#qr:hover{transform:none}}
