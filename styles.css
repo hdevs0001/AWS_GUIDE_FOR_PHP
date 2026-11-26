@@ -39,11 +39,11 @@ h2{font-size:clamp(26px,4vw,38px);margin:0 0 8px;letter-spacing:-.02em}
 .wf .row{display:flex;flex-wrap:wrap;align-items:center;gap:6px;border:1px solid var(--bd);background:var(--card);border-radius:18px;padding:18px}
 .wf h3{width:100%;margin:0 0 6px;font-size:14px;color:var(--ac);text-transform:uppercase;letter-spacing:.08em}
 .chip{background:var(--code);color:#e8eaf0;border:1px solid var(--bd);border-radius:10px;padding:7px 12px;font-size:13px}
-.seg{position:relative;display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--bd);background:var(--card);border-radius:16px;padding:5px;margin-bottom:12px}
+.seg{position:relative;display:grid;grid-template-columns:repeat(3,1fr);gap:0;border:1px solid var(--bd);background:var(--card);border-radius:16px;padding:5px;margin-bottom:12px}
 .seg button{position:relative;z-index:1;background:none;border:0;color:var(--mu);padding:12px 10px;font:inherit;font-weight:700;cursor:pointer;border-radius:12px;text-align:center}
 .seg button[aria-selected="true"]{color:#111}
-.seg .ind{position:absolute;top:5px;bottom:5px;left:5px;width:calc(50% - 5px);border-radius:12px;background:linear-gradient(135deg,var(--ac),#ff6a00);transition:transform .35s cubic-bezier(.2,.9,.3,1)}
-.seg[data-t="1"] .ind{transform:translateX(100%)}
+.seg .ind{position:absolute;top:5px;bottom:5px;left:5px;width:calc((100% - 10px)/3);border-radius:12px;background:linear-gradient(135deg,var(--ac),#ff6a00);transition:transform .35s cubic-bezier(.2,.9,.3,1)}
+.seg[data-t="1"] .ind{transform:translateX(100%)}.seg[data-t="2"] .ind{transform:translateX(200%)}
 .prog{position:sticky;top:calc(60px + env(safe-area-inset-top,0px));z-index:10;background:color-mix(in srgb,var(--bg) 85%,transparent);backdrop-filter:blur(10px);padding:10px 0;display:flex;align-items:center;gap:12px;font-size:14px;color:var(--mu)}
 .bar{flex:1;height:8px;border-radius:9px;background:var(--card);border:1px solid var(--bd);overflow:hidden}.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--ok),var(--ac));transition:width .4s}
 .panel{animation:in .45s both}@keyframes in{from{opacity:0;transform:translateY(14px)}}
@@ -136,3 +136,5 @@ img,canvas,svg{max-width:100%}
  .brand{font-size:15px}
 }
 @media(hover:none){.btn:hover,.rq:hover,#qr:hover{transform:none}}
+
+@media(max-width:700px){.seg button{font-size:12.5px;padding:10px 4px;line-height:1.25}}
